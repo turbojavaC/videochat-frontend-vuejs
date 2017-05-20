@@ -3,7 +3,7 @@
     <div>
         <v-btn primary dark @click.native="login()" v-show="!authenticated">LOGIN</v-btn>
         <v-btn primary dark @click.native="logout()" v-show="authenticated">LOGOUT</v-btn>
-        <p v-show="authenticated">You are logged in as {{ name }}</p>
+        <p v-if="authenticated"> You are logged in as {{ name }} with {{ provider }}.</p>
     </div>
 
 </template>
@@ -22,7 +22,11 @@
             name: function () {
                const profile = JSON.parse(localStorage.getItem('profile'));
                return profile.name;
-			}
+			},
+            provider: function () {
+				const profile = JSON.parse(localStorage.getItem('profile'));
+				return profile.identities[0].provider
+            }
         },
         beforeMount () {
 			this.authenticated = this.checkAuth();

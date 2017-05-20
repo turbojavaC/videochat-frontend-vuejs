@@ -11,7 +11,7 @@
 		name: 'app',
 		data () {
 			return {
-				greeting: 'Welcome to the Vuedio Chat App!',
+				greeting: 'Welcome to the Vuedio Chat App!'
 			}
 		},
 		methods: {
