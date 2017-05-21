@@ -9,13 +9,15 @@
 </template>
 
 <script>
+    import { bus } from '../main.js'
+
 	export default {
 		name: 'login',
 		data () {
 			return {
 				authenticated: false,
                 secretThing: '',
-				lock: new Auth0Lock('bvWAKPvc_eirizgokSzyGQMq-nsyMZNG', 'olegkorol.eu.auth0.com')
+				lock: new Auth0Lock(process.env.AUTH0_CLIENT_ID, process.env.AUTH0_DOMAIN)
 			}
 		},
         computed: {
@@ -28,6 +30,20 @@
 				return profile.identities[0].provider
             }
         },
+		methods: {
+			login () {
+				this.lock.show();
+			},
+			logout () {
+				localStorage.removeItem('id_token');
+				localStorage.removeItem('profile');
+				this.authenticated = false;
+				bus.$emit('authStatus', this.authenticated)
+			},
+			checkAuth () {
+				return !!localStorage.getItem('id_token');
+			}
+		},
         beforeMount () {
 			this.authenticated = this.checkAuth();
 
@@ -43,6 +59,7 @@
 					localStorage.setItem('profile', JSON.stringify(profile));
 
 					this.authenticated = true;
+					bus.$emit('authStatus', this.authenticated)
 				});
 			});
 
@@ -50,19 +67,6 @@
 				// handle error when authorizaton fails
                 console.error('Could not authorize', error)
 			});
-        },
-        methods: {
-			login () {
-				this.lock.show();
-			},
-			logout () {
-				localStorage.removeItem('id_token');
-				localStorage.removeItem('profile');
-				this.authenticated = false;
-			},
-			checkAuth () {
-				return !!localStorage.getItem('id_token');
-			}
         }
 	}
 </script>
