@@ -8,8 +8,6 @@ Vue.use(Vuetify);
 
 Vue.component('authentication', Authentication);
 
-console.log(process.env.AUTH0_CLIENT_ID);
-
 export const bus = new Vue();
 
 new Vue({
