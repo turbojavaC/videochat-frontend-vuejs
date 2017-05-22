@@ -37,7 +37,7 @@
                 </v-menu>
             </v-card-row>
             <v-card-text style="background-color:aliceblue; height:90vh">
-                // CONTENT GOES HERE
+                 <webrtc></webrtc>
             </v-card-text>
         </v-card>
 
@@ -46,12 +46,14 @@
 
 <script>
 	import Greeting from './components/Greeting.vue'
+    import WebRTC from './components/WebRTC.vue'
 	import { bus } from './main.js'
 
 	export default {
 		name: 'app',
 		components: {
-			'greeting': Greeting
+			'greeting': Greeting,
+            'webrtc': WebRTC
 		},
 		data () {
 			return {
