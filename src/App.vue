@@ -37,7 +37,8 @@
                 </v-menu>
             </v-card-row>
             <v-card-text style="background-color:aliceblue; height:90vh">
-                 <webrtc></webrtc>
+                <socket-io-client></socket-io-client>
+                <webrtc></webrtc>
             </v-card-text>
         </v-card>
 
