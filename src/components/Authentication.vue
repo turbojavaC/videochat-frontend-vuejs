@@ -3,7 +3,7 @@
     <div>
         <v-btn primary dark @click.native="login()" v-show="!authenticated">LOGIN</v-btn>
         <v-btn primary dark @click.native="logout()" v-show="authenticated">LOGOUT</v-btn>
-        <p v-if="authenticated"> You are logged in as {{ name }} with {{ provider }}.</p>
+        <p v-if="authenticated"> You logged in as <b>{{ name }}</b> with <b>{{ provider }}</b>.</p>
     </div>
 
 </template>

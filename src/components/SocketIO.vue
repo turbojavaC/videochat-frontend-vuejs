@@ -1,6 +1,7 @@
 <template>
 
     <div>
+		<h5>Create or join a room.</h5>
         <input type="text" placeholder="Enter room name" v-model="room">
         <button v-on:click="submitRoom">Submit</button>
     </div>
@@ -16,7 +17,8 @@
     		return {
 				socket: io(process.env.SOCKET_IO_URL || 'http://localhost:3000'),
                 socketConnection: '',
-				room: ''
+				room: '',
+				currentRoom: 'none'
             }
         },
         methods: {
@@ -28,30 +30,24 @@
 				} else {
 					alert('Room cannot be empty')
                 }
-            },
-			sendMessage (message) {
-				console.log('Client sending message: ', message);
-				this.socket.emit('message', message);
-	        }
+            }
         },
         mounted() {
 
-			bus.$on('send-message', (data) => {
-                this.sendMessage(data)
+			this.socket.on('message', function(message) {
+				console.info('Client got a message =>', message);
+				bus.$emit('msg', message)
 			});
 
-    		
-            // connection
+			bus.$on('message', function (message) {
+				console.log('Client emitting message to sockets');
+                this.socket.emit('message', message)
+			});
+
+			// connection
     		this.socket.on('connect', () => {
                 console.info('Client:', 'connected. The socket-id is', this.socket.id);
 			});
-
-    		// sending and receiving signaling messages
-			this.socket.on('message', function(message) {
-				console.log('Client received message:', message);
-				bus.$emit('receive-message', message)
-			});
-
 
     		// custom events
 		    this.socket.on('server-log', data => {
@@ -61,11 +57,15 @@
 			this.socket.on('created', function(room, clientId) {
 				console.log('Client: Created room ' + room + ' with client ' + clientId);
 				this.isInitiator = true;
+				this.currentRoom = room;
+				bus.$emit('entered-room', room)
 			});
 
 			this.socket.on('joined', function(room, clientId) {
 				console.log('Client: Joined room ' + room + ' with client ' + clientId);
 				this.isInitiator = false;
+				this.currentRoom = room;
+				bus.$emit('entered-room', room)
 			});
 
 			this.socket.on('full', function(room) {
@@ -80,8 +80,6 @@
 			this.socket.on('disconnect', () => {
 				console.info('Client:', 'disconnected')
 			})
-
-
         }
     }
 
